@@ -25,7 +25,7 @@ import {
 } from "../actionTypes"
 import  axios from 'axios'
 import api from "../../environments/environment";
-import {isAdmin, isLamata, isOperator, OperatorName} from "../../environments/constants";
+import {isAdmin, isLamata, isOperator, OperatorId, OperatorName} from "../../environments/constants";
 import {createUser} from "./userAction";
 
 
@@ -66,14 +66,14 @@ export const changeDriverStatus = (id, status) => async dispatch => {
 };
 
 
-export const createDriver = (vehicleId, operatorInput, operatorid, firstname, lastname, residentialaddress, email, phoneno, status, pin, bankname, accountname, accountnumber, zone, area, route, geofencedarea, appstatus) => async dispatch => {
-  const body = {firstname, lastname, residentialaddress, email, phoneno, status, pin, operatorid: operatorInput, bankname, accountname, accountnumber, zone, area, route, geofencedarea, appstatus};
+export const createDriver = (vehicleId, operatorInput, operatorId, firstName, lastName, residentialAddress, email, phoneNo, status, pin, bankName, accountName, accountNumber, zone, area, route, geofencedarea, appstatus) => async dispatch => {
+  const body = {firstName, lastName, residentialAddress, email, phoneNo, pin, operatorId, bankName, accountName, accountNumber, zone, area, route};
   try {
     const res = await axios.post(`${api.driver}/api/me/drivers/`, body);
-    await axios.post(`${api.driverVehicles}/api/me/drivervehicles/`, {vehicleId: vehicleId, driverId: res.data.id, operatorId: operatorInput});
-    dispatch(setDriversRequest(res.data.id, 1, operatorInput))
+    await axios.post(`${api.driverVehicles}/api/me/drivervehicles/`, {vehicleId: vehicleId, driverId: res.data.id, operatorId});
+    dispatch(setDriversRequest(res.data.id, 1, operatorId))
     if(res.data) {
-      dispatch(createUser(firstname, lastname, email, email, 'not available', '+234' + phoneno.substr(1), res.data.id))
+      dispatch(createUser(firstName, lastName, email, email, 'not available', '+234' + phoneNo.substr(1), res.data.id))
 
     }
     dispatch({
@@ -95,8 +95,8 @@ export const createDriver = (vehicleId, operatorInput, operatorid, firstname, la
   }
 };
 
-export const updateDriver = (id, operatorid, firstname, lastname, residentialaddress, email, phoneno, status, pin, bankname, accountname, accountnumber, zone, area, route, geofencedarea, appstatus) => async dispatch => {
-  const body = {firstname, lastname, residentialaddress, email, phoneno, status, pin, operatorid, bankname, accountname, accountnumber, zone, area, route, geofencedarea, appstatus};
+export const updateDriver = (id, operatorId, firstName, lastName, residentialAddress, email, phoneNo, status, pin, bankName, accountName, accountNumber, zone, area, route, geofencedarea, appstatus) => async dispatch => {
+  const body = {firstName, lastName, residentialAddress, email, phoneNo, status, pin, operatorId, bankName, accountName, accountNumber, zone, area, route, geofencedarea, appstatus};
   try {
     const res = await axios.put(`${api.driver}/api/drivers/${id}/`, body);
     dispatch({
@@ -175,7 +175,7 @@ export const approveDriver = (id) => async dispatch => {
 export const getMeRequestDrivers = () => async dispatch => {
   try {
     dispatch(isLoading());
-    const res = await axios.get(`${api.driver}/api/request/?operatorid=${OperatorName}`);
+    const res = await axios.get(`${api.driver}/api/request/?operatorid=${OperatorId}`);
     dispatch({
       type: DRIVER_ME,
       payload: res.data
@@ -219,9 +219,9 @@ export const getAllApplicationDrivers = () => async dispatch => {
   }
 };
 
-export const setDriversRequest = (id, status, operator) => async dispatch => {
+export const setDriversRequest = (id, status, operatorId) => async dispatch => {
   try {
-    await axios.put(`${api.driver}/api/driver/operator/${id}/?status=${status}&operatorid=${operator}`)
+    await axios.put(`${api.driver}/api/driver/operator/${id}/?status=${status}&operatorid=${operatorId}`)
     // dispatch(getAllRequestDrivers())
     // dispatch(getMeRequestDrivers())
     // dispatch(getAllApplicationDrivers())

@@ -10,12 +10,12 @@ import VehicleActionBtn from "./components/VehicleActionBtn";
 import {isAdmin, isLamata, isOperator, isPartner} from "../../environments/constants";
 import {getDrivers, getDriverVehicles} from "../../store/actions/driverAction";
 import Pagination from "react-js-pagination";
+import {getOperators} from "../../store/actions/operatorAction";
 
 
 function UserRow(props) {
   const user = props.user;
-  const drivers = props.drivers;
-  const driverVehicles = props.driverVehicles
+  const operators = props.operators;
 
 
   const getBadge = (status) => {
@@ -24,6 +24,21 @@ function UserRow(props) {
             status === 'Pending' ? 'warning' :
             'primary'
   };
+
+
+  const getOperator = (id)=> {
+    let operatorA = '';
+    if(operators && id) {
+      operators.map(operator=> {
+        if(operator.id == id) {
+          operatorA = operator.name
+        }
+      })
+      if(operatorA) {
+        return operatorA
+      } else return 'Not available'
+    }
+  }
   return (
 
     <tr key={user.id}>
@@ -32,10 +47,10 @@ function UserRow(props) {
       {(isAdmin || isOperator|| isPartner) && <td>{user.vehicle_model}</td>}
       {(isAdmin || isOperator|| isPartner) &&<td>{user.plate_number}</td>}
       <td>{user.capacity}</td>
-      {(isAdmin || isLamata)?  <td>{user.operator}</td>: null}
+      {(isAdmin || isLamata)?  <td>{getOperator(user.operator)}</td>: null}
       {/*<td>{user.assigned}</td>*/}
       {(((user.assigned_driver == "1") && (isAdmin || isOperator|| isPartner))) && <td><Badge color={getBadge("Active")}>Yes</Badge></td>}
-      {(((user.assigned_driver == null) && (isAdmin || isOperator|| isPartner)) ||((user.assigned_driver == "null") && (isAdmin || isOperator)|| isPartner)) && <td><Badge color={getBadge("Inactive")}>No</Badge></td>}
+      {(((user.assigned_driver == null) && (isAdmin || isOperator|| isPartner)) ) && <td><Badge color={getBadge("Inactive")}>No</Badge></td>}
       {(user.status == null ) && <td><Badge color={getBadge("Pending")}>Pending</Badge></td>}
       {(user.status == "1") && <td><Badge color={getBadge("Active")}>Active</Badge></td>}
       {(user.status == "0") && <td><Badge color={getBadge("Inactive")}>Inactive</Badge></td>}
@@ -44,7 +59,7 @@ function UserRow(props) {
   )
 }
 
-const Vehicles = ({getVehicles, vehicles, vehicle, isLoading,  searchVehicle, error, driverVehicles, getDriverVehicles, getDrivers, drivers}) => {
+const Vehicles = ({getVehicles, vehicles, vehicle, isLoading,  searchVehicle, error, driverVehicles, getDriverVehicles, getDrivers, drivers, operators, getOperators}) => {
   const [formData, setFormData] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(10);
@@ -97,6 +112,7 @@ const Vehicles = ({getVehicles, vehicles, vehicle, isLoading,  searchVehicle, er
   useEffect(()=> {
     getDriverVehicles();
     getDrivers();
+    getOperators();
   },[])
 
 
@@ -154,7 +170,7 @@ const Vehicles = ({getVehicles, vehicles, vehicle, isLoading,  searchVehicle, er
                 </thead>
                 <tbody>
                 {posts && currentPosts.map((vehicle, index) =>
-                  <UserRow key={index} user={vehicle} drivers={drivers} driverVehicles={driverVehicles}/>
+                  <UserRow key={index} user={vehicle} drivers={drivers} driverVehicles={driverVehicles} operators={operators}/>
                 )}
                 {vehicle &&
                 <UserRow user={vehicle}/>
@@ -186,7 +202,8 @@ function mapDispatchToProps(dispatch) {
     getVehicles: () => dispatch(getVehicles()),
     searchVehicle: (id) => dispatch(searchVehicle(id)),
     getDriverVehicles: () => dispatch(getDriverVehicles()),
-    getDrivers: () => dispatch(getDrivers())
+    getDrivers: () => dispatch(getDrivers()),
+    getOperators: () => dispatch(getOperators()),
   };
 }
 
@@ -196,7 +213,8 @@ const mapStateToProps = state => ({
   error: state.vehicle.error,
   isLoading: state.vehicle.isLoading,
   driverVehicles: state.driver.driverVehicles,
-  drivers: state.driver.drivers
+  drivers: state.driver.drivers,
+  operators: state.operator.operators,
 
 });
 

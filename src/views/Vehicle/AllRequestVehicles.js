@@ -9,8 +9,7 @@ import {isAdmin} from "../../environments/constants";
 import {getPartners} from "../../store/actions/partnerAction";
 import AllRequestVehicleActionBtn from "./components/AllRequestVehicleActionBtn";
 import Pagination from "react-js-pagination";
-import axios from "axios";
-import api from "../../environments/environment";
+import {getOperators} from "../../store/actions/operatorAction";
 
 
 
@@ -18,7 +17,22 @@ import api from "../../environments/environment";
 
 function UserRow(props) {
   const user = props.user;
-  const partners = props.partners;
+  const operators = props.operators
+
+
+  const getOperator = (id)=> {
+    let operatorA = '';
+    if(operators && id) {
+      operators.map(operator=> {
+        if(operator.id == id) {
+          operatorA = operator.name
+        }
+      })
+      if(operatorA) {
+        return operatorA
+      } else return 'Not available'
+    }
+  }
   return (
     <tr key={user.id}>
       <td>{user.mode}</td>
@@ -31,13 +45,13 @@ function UserRow(props) {
       {/*    return <td key={[partner.id]}>{partner.name}</td>*/}
       {/*  }*/}
       {/*})}*/}
-      {isAdmin?  <td>{user.operator}</td>: null}
+      {isAdmin?  <td>{getOperator(user.operator)}</td>: null}
       <td> <AllRequestVehicleActionBtn id={user.id} user={user} /> </td>
     </tr>
   )
 }
 
-const Vehicles = ({getVehiclesRequestAll, vehicles, vehicle, isLoading,  searchVehicle, error}) => {
+const Vehicles = ({getVehiclesRequestAll, vehicles, vehicle, isLoading,  searchVehicle, error, operators, getOperators}) => {
   const [formData, setFormData] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(10);
@@ -80,6 +94,7 @@ const Vehicles = ({getVehiclesRequestAll, vehicles, vehicle, isLoading,  searchV
 
   useEffect(()=>{
       getVehiclesRequestAll();
+      getOperators();
      // getPartner();
   },[]);
 
@@ -144,7 +159,7 @@ const Vehicles = ({getVehiclesRequestAll, vehicles, vehicle, isLoading,  searchV
                 </thead>
                 <tbody>
                 {posts && currentPosts.map((vehicle, index) =>
-                  <UserRow key={index} user={vehicle} partners={partners}/>
+                  <UserRow key={index} user={vehicle} partners={partners} operators={operators}/>
                 )}
                 {vehicle &&
                 <UserRow user={vehicle}/>
@@ -176,6 +191,7 @@ function mapDispatchToProps(dispatch) {
     getVehiclesRequestAll: () => dispatch(getVehiclesRequestAll()),
     searchVehicle: (id) => dispatch(searchVehicle(id)),
     getPartners: () => dispatch(getPartners()),
+    getOperators: () => dispatch(getOperators()),
   };
 }
 
@@ -185,6 +201,7 @@ const mapStateToProps = state => ({
   error: state.vehicle.error,
   isLoading: state.vehicle.isLoading,
   partners: state.partners.partners,
+  operators: state.operator.operators,
 
 });
 

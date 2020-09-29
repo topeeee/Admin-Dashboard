@@ -5,9 +5,11 @@ import axios from "axios"
 import {getDrivers} from "../../store/actions/driverAction";
 import api from "../../environments/environment";
 import {isAdmin} from "../../environments/constants";
+import {getOperators} from "../../store/actions/operatorAction";
+import {ZoneUser} from "../../store/actions/zoneAction";
 
 
-const Operator = ({getDrivers, match, drivers})=> {
+const Operator = ({getDrivers, match, drivers, operators, getOperators, zones, ZoneUser})=> {
   const [newOperator, setNewOperator] = useState({});
   const [driverVehicle, setDriverVehicle] = useState([]);
   const [vehicleId, setVehicleId] = useState('');
@@ -22,7 +24,8 @@ const Operator = ({getDrivers, match, drivers})=> {
   };
 
 
-  function setDriver() {
+  function setDriver()
+  {
     if (drivers){
       drivers.map(op=> {
         if(op.id == match.params.id){
@@ -31,6 +34,35 @@ const Operator = ({getDrivers, match, drivers})=> {
       })
     }
   }
+
+  const getOperator = (id)=> {
+    let operatorA = '';
+    if(operators && id) {
+      operators.map(operator=> {
+        if(operator.id == id) {
+          operatorA = operator.name
+        }
+      })
+      if(operatorA) {
+        return operatorA
+      } else return 'Not available'
+    }
+  }
+  const getZone = (id)=> {
+    let zoneA = ''
+    if(zones && id) {
+      zones.map(zone=> {
+        if(zone.id == id) {
+          zoneA = zone.zone
+        }
+      })
+
+      if(zoneA) {
+        return zoneA
+      } else return 'Not available'
+    }
+  }
+
  async function getDriverVehicle() {
    try {
    const res = await  axios.get(`${api.driverVehicles}/api/drivervehicles/`)
@@ -52,6 +84,8 @@ const Operator = ({getDrivers, match, drivers})=> {
   useEffect(()=>{
     getDrivers();
     getDriverVehicle();
+    getOperators();
+    ZoneUser();
   },[]);
 
   useEffect(()=>{
@@ -89,15 +123,15 @@ const Operator = ({getDrivers, match, drivers})=> {
                 <tbody>
                 <tr>
                   <td><strong>Driver  FirstName</strong></td>
-                  <td>{newOperator.firstname}</td>
+                  <td>{newOperator.firstName}</td>
                 </tr>
                   <tr className="w-100">
                     <td><strong>Driver LastName</strong></td>
-                    <td>{newOperator.lastname}</td>
+                    <td>{newOperator.lastName}</td>
                   </tr>
                 <tr className="w-100">
                   <td><strong>Driver Phone</strong></td>
-                  <td>{newOperator.phoneno}</td>
+                  <td>{newOperator.phoneNo}</td>
                 </tr>
                 <tr>
                   <td><strong>Driver Email</strong></td>
@@ -105,25 +139,25 @@ const Operator = ({getDrivers, match, drivers})=> {
                 </tr>
                 <tr>
                   <td><strong>Driver Address</strong></td>
-                  <td>{newOperator.residentialaddress}</td>
+                  <td>{newOperator.residentialAddress}</td>
                 </tr>
                 <tr>
                   <td><strong>App Status</strong></td>
-                  {(newOperator.appstatus === "1") && <td><Badge color={getBadge("Active")}>online</Badge></td> }
-                  {(newOperator.appstatus === "0") && <td><Badge color={getBadge("Inactive")}>offline</Badge></td> }
-                  {(newOperator.appstatus === "") && <td><Badge color={getBadge("Refunds")}>not available</Badge></td> }
+                  {(newOperator.appStatus === "1") && <td><Badge color={getBadge("Active")}>online</Badge></td> }
+                  {(newOperator.appStatus === "0") && <td><Badge color={getBadge("Inactive")}>offline</Badge></td> }
+                  {(newOperator.appStatus === "") && <td><Badge color={getBadge("Refunds")}>not available</Badge></td> }
                 </tr>
                 <tr>
                   <td><strong>Bank Name</strong></td>
-                  <td>{newOperator.bankname}</td>
+                  <td>{newOperator.bankName}</td>
                 </tr>
                 <tr>
                   <td><strong>Account Name</strong></td>
-                  <td>{newOperator.accountname}</td>
+                  <td>{newOperator.accountName}</td>
                 </tr>
                 <tr>
                   <td><strong>Account Number</strong></td>
-                  <td>{newOperator.accountnumber}</td>
+                  <td>{newOperator.accountNumber}</td>
                 </tr>
                 <tr>
                   <td><strong>Vehicle Plate No</strong></td>
@@ -151,11 +185,11 @@ const Operator = ({getDrivers, match, drivers})=> {
                 </tr>
                 <tr>
                   <td><strong>Zone</strong></td>
-                  <td>{newOperator.zone}</td>
+                  <td>{getZone(newOperator.zone)}</td>
                 </tr>
                 <tr>
                   <td><strong>Operator</strong></td>
-                  <td>{newOperator.operatorid}</td>
+                  <td>{getOperator(newOperator.operatorId)}</td>
                 </tr>
                 <tr>
                   <td><strong>Status</strong></td>
@@ -179,11 +213,15 @@ const Operator = ({getDrivers, match, drivers})=> {
 function mapDispatchToProps(dispatch) {
   return {
     getDrivers: () => dispatch(getDrivers()),
+    getOperators: () => dispatch(getOperators()),
+    ZoneUser: () => dispatch(ZoneUser()),
   };
 }
 
 const mapStateToProps = state => ({
   drivers: state.driver.drivers,
+  operators: state.operator.operators,
+  zones: state.zone.zones,
 });
 
 export default connect(mapStateToProps,mapDispatchToProps)(Operator);

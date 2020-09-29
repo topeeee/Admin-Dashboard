@@ -12,7 +12,7 @@ import {
 } from "../actionTypes"
 import  axios from 'axios'
 import api from "../../environments/environment";
-import {isAdmin, isLamata, isOperator, isPartner, OperatorName} from "../../environments/constants";
+import {isAdmin, isLamata, isOperator, isPartner, OperatorId} from "../../environments/constants";
 
 
 
@@ -23,10 +23,10 @@ export const getService = () => async dispatch => {
     dispatch(isLoading());
     const res = await axios.get(`${api.service}/api/services/`);
     if(isOperator) {
-      const res1 =  await axios.get(`${api.operatorService}/api/mode/?operator_name=${OperatorName}`)
+      const res1 =  await axios.get(`${api.operatorService}/api/mode/?operator_name=${OperatorId}`)
       res1.data.forEach(operatorService => {
         res.data.forEach(service=> {
-          if(service.service === operatorService.servicecode) {
+          if(service.id == operatorService.servicecode) {
             newOperatorService.push(service)
           }
         })

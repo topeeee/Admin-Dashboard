@@ -9,12 +9,15 @@ import {getDrivers, searchDriver, approveDriver} from "../../store/actions/drive
 import {isAdmin, isLamata, isOperator} from "../../environments/constants";
 import FlaggedDriverActionBtn from "./components/FlaggedDriverActionBtn";
 import Pagination from "react-js-pagination";
+import {getOperators} from "../../store/actions/operatorAction";
 
 
 
 
 function UserRow(props) {
   const user = props.user;
+  const operators = props.operators
+
   const getBadge = (status) => {
     return status === 'Active' ? 'success' :
       status === 'Refunds' ? 'secondary' :
@@ -23,19 +26,34 @@ function UserRow(props) {
             'primary'
   };
 
+  const getOperator = (id)=> {
+    let operatorA = '';
+    if(operators && id) {
+      operators.map(operator=> {
+        if(operator.id == id) {
+          operatorA = operator.name
+        }
+      })
+      if(operatorA) {
+        return operatorA
+      } else return 'Not available'
+    }
+  }
+
+
   return (
     <tr key={user.id}>
-      <td>{user.firstname}</td>
-      <td>{user.lastname}</td>
-      <td>{user.phoneno}</td>
-      <td>{user.operatorid}</td>
+      <td>{user.firstName}</td>
+      <td>{user.lastName}</td>
+      <td>{user.phoneNo}</td>
+      <td>{getOperator(user.operatorId)}</td>
       {(user.status === "3") && <td><Badge color={getBadge("Pending")}>Flagged</Badge></td> }
       <td> <FlaggedDriverActionBtn id={user.id} user={user} /> </td>
     </tr>
   )
 }
 
-const FlaggedDrivers = ({getDrivers, drivers, driver, isLoading, error,  approveDriver}) => {
+const FlaggedDrivers = ({getDrivers, drivers, driver, isLoading, error,  approveDriver, operators, getOperators}) => {
   const [formData, setFormData] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(10);
@@ -71,6 +89,7 @@ const FlaggedDrivers = ({getDrivers, drivers, driver, isLoading, error,  approve
 
   useEffect(()=>{
       getDrivers();
+      getOperators();
   },[]);
 
   const onChange = (e) =>{
@@ -128,7 +147,7 @@ const FlaggedDrivers = ({getDrivers, drivers, driver, isLoading, error,  approve
                 </thead>
                 <tbody>
                 {posts && currentPosts.map((user, index) =>
-                  <UserRow key={index} user={user} approved={approveDriver}/>
+                  <UserRow key={index} user={user} approved={approveDriver} operators={operators}/>
                 )}
                 </tbody>
               </Table>}
@@ -156,7 +175,8 @@ function mapDispatchToProps(dispatch) {
   return {
     getDrivers: () => dispatch(getDrivers()),
     searchDriver: (id) => dispatch(searchDriver(id)),
-    approveDriver: (id) =>dispatch(approveDriver(id))
+    approveDriver: (id) =>dispatch(approveDriver(id)),
+    getOperators: () => dispatch(getOperators()),
   };
 }
 
@@ -164,7 +184,8 @@ const mapStateToProps = state => ({
   drivers: state.driver.drivers,
   driver: state.driver.driver,
   error: state.driver.error,
-  isLoading: state.driver.isLoading
+  isLoading: state.driver.isLoading,
+  operators: state.operator.operators,
 
 });
 

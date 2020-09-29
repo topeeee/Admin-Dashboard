@@ -3,9 +3,10 @@ import {Badge, Card, CardBody, CardHeader, Col, Row, Table} from 'reactstrap';
 import {connect} from "react-redux";
 import {getVehicles} from "../../store/actions/vehicleAction";
 import {isAdmin, isLamata} from "../../environments/constants";
+import {getOperators} from "../../store/actions/operatorAction";
 
 
-const Operator = ({getVehicles, match, vehicles})=> {
+const Operator = ({getVehicles, match, vehicles, operators, getOperators})=> {
   // const [operator, setOperator] = useState([]);
   const [newOperator, setNewOperator] = useState({});
 
@@ -26,8 +27,24 @@ const Operator = ({getVehicles, match, vehicles})=> {
       })
     }
   }
+
+  const getOperator = (id)=> {
+    let operatorA = '';
+    if(operators && id) {
+      operators.map(operator=> {
+        if(operator.id == id) {
+          operatorA = operator.name
+        }
+      })
+      if(operatorA) {
+        return operatorA
+      } else return 'Not available'
+    }
+  }
+
   useEffect(()=>{
     getVehicles();
+    getOperators();
   },[]);
 
   useEffect(()=>{
@@ -69,7 +86,7 @@ const Operator = ({getVehicles, match, vehicles})=> {
                 </tr>
                 {isAdmin ? <tr>
                   <td><strong>Operator</strong></td>
-                  <td>{newOperator.operator}</td>
+                  <td>{getOperator(newOperator.operator)}</td>
                 </tr>: null}
                 <tr>
                   <td><strong>Assigned To Driver</strong></td>
@@ -103,11 +120,13 @@ const Operator = ({getVehicles, match, vehicles})=> {
 function mapDispatchToProps(dispatch) {
   return {
     getVehicles: () => dispatch(getVehicles()),
+    getOperators: () => dispatch(getOperators()),
   };
 }
 
 const mapStateToProps = state => ({
   vehicles: state.vehicle.vehicles,
+  operators: state.operator.operators,
 
 
 

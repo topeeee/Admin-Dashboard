@@ -14,12 +14,14 @@ import axios from "axios";
 import api from "../../environments/environment";
 import Pagination from "react-js-pagination";
 import RequestMeDriverActionBtn from "./components/RequestMeDriverActionBtn";
+import {getOperators} from "../../store/actions/operatorAction";
 
 
 
 
 function UserRow(props) {
   const user = props.user;
+  const operators =props.operators
 
   const getBadge = (status) => {
     return status === 'Active' ? 'success' :
@@ -29,13 +31,29 @@ function UserRow(props) {
             'primary'
   };
 
+  const getOperator = (id)=> {
+    let operatorA = '';
+    if(operators && id) {
+      operators.map(operator=> {
+        if(operator.id == id) {
+          operatorA = operator.name
+        }
+      })
+      if(operatorA) {
+        return operatorA
+      } else return 'Not available'
+    }
+  }
+
+
+
   return (
     <tr key={user.id}>
-      <td>{user.firstname}</td>
-      <td>{user.lastname}</td>
-      <td>{user.phoneno}</td>
-      <td>{user.operatorid}</td>
-      <td>{user.residentialaddress}</td>
+      <td>{user.firstName}</td>
+      <td>{user.lastName}</td>
+      <td>{user.phoneNo}</td>
+      <td>{getOperator(user.operatorId)}</td>
+      <td>{user.residentialAddress}</td>
       <td>{user.email}</td>
       {(user.status === "1") && <td><Badge color={getBadge("Active")}>Active</Badge></td> }
       {(user.status === "0") && <td><Badge color={getBadge("Inactive")}>Inactive</Badge></td> }
@@ -45,7 +63,7 @@ function UserRow(props) {
   )
 }
 
-const MeRequestDrivers = ({getMeRequestDrivers, drivers, driver, isLoading,  searchDriver, error,  approveDriver, getDriverVehicleId, getDriverVehicleId2, clearDriverVehicleId}) => {
+const MeRequestDrivers = ({getMeRequestDrivers, drivers, driver, isLoading,  searchDriver, error,  approveDriver, getDriverVehicleId, getDriverVehicleId2, clearDriverVehicleId, operators, getOperators}) => {
   const [formData, setFormData] = useState('');
   const [driverVehicle, setDriverVehicle] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -82,6 +100,7 @@ useEffect(()=> {
 
   useEffect(()=>{
     getMeRequestDrivers();
+    getOperators();
       },[]);
 
   function getDriverVehicle() {
@@ -192,7 +211,7 @@ useEffect(()=> {
                 </thead>
                 <tbody>
                 {posts && currentPosts.filter((user) => user.acceptstatus === "0").map((user, index) =>
-                  <UserRow key={index} user={user} />
+                  <UserRow key={index} user={user}  operator={operators}/>
                 )}
                 {driver &&
                 <UserRow user={driver} approved={approveDriver}/>
@@ -227,7 +246,8 @@ function mapDispatchToProps(dispatch) {
     getMeRequestDrivers: () => dispatch(getMeRequestDrivers()),
     searchDriver: (id) => dispatch(searchDriver(id)),
     approveDriver: (id) =>dispatch(approveDriver(id)),
-    clearDriverVehicleId: () =>dispatch(clearDriverVehicleId())
+    clearDriverVehicleId: () =>dispatch(clearDriverVehicleId()),
+    getOperators: () => dispatch(getOperators()),
   };
 }
 
@@ -238,7 +258,8 @@ const mapStateToProps = state => ({
   isLoading: state.driver.isLoading,
   approveId: state.driver.approveId,
   getDriverVehicleId: state.driver.getDriverVehicleId,
-  getDriverVehicleId2: state.driver.getDriverVehicleId2
+  getDriverVehicleId2: state.driver.getDriverVehicleId2,
+  operators: state.operator.operators,
 });
 
 export default connect(mapStateToProps,mapDispatchToProps)(MeRequestDrivers);

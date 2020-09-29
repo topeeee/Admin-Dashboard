@@ -18,7 +18,15 @@ import {
 } from "../actionTypes"
 import  axios from 'axios'
 import api from "../../environments/environment";
-import {isAdmin, isLamata, isOperator, isPartner, OperatorName, PartnerId} from "../../environments/constants";
+import {
+  isAdmin,
+  isLamata,
+  isOperator,
+  isPartner,
+  OperatorId,
+  OperatorName,
+  PartnerId
+} from "../../environments/constants";
 
 
 
@@ -27,7 +35,7 @@ export const getVehicles = () => async dispatch => {
   if(isAdmin || isLamata) {
     VehicleApi = `${api.vehicle}/api/vehicles/`
   }else if(isOperator) {
-    VehicleApi = `${api.vehicle}/api/operators/?operator=${OperatorName}`
+    VehicleApi = `${api.vehicle}/api/operators/?operator=${OperatorId}`
   } else if(isPartner) {
     VehicleApi = `${api.vehicle}/api/partners/?partner_id=${PartnerId}`
   }
@@ -68,7 +76,7 @@ export const getVehiclesRequestAll = () => async dispatch => {
 export const getVehiclesRequestMe = () => async dispatch => {
   try {
     dispatch(isLoading());
-    const res = await axios.get(`${api.vehicle}/api/request/?operator=${OperatorName}`);
+    const res = await axios.get(`${api.vehicle}/api/request/?operator=${OperatorId}`);
     dispatch({
       type: VEHICLE_BY_ME,
       payload: res.data
@@ -262,7 +270,7 @@ export const rejectRequestMe= (id) => async dispatch => {
 
 export const RequestAll= (id) => async dispatch => {
   try {
-    await axios.put(`${api.vehicle}/api/operators/${id}/?operator=${OperatorName}`);
+    await axios.put(`${api.vehicle}/api/operators/${id}/?operator=${OperatorId}`);
     await axios.put(`${api.vehicle}/api/approve/${id}/`);
 
     dispatch(getVehiclesRequestAll());

@@ -181,7 +181,7 @@ const OperatorModalUpdate = (props) => {
       if(newOperator){
         newOperator.map(operator => {
           if(operator.id === operatorUpdateId) {
-            setOperatorName(operator.name);
+            setOperatorName(operator.id);
             setFormData({name: operator.name, email: operator.email, phoneNo: operator.phoneNo, officeAddress: operator.officeAddress,  numberOfVehicle: operator.numberOfVehicle, contactName: operator.contactName, contactPhoneNo: operator.contactPhoneNo, contactEmail: operator.contactEmail})
           }
         });
@@ -290,44 +290,64 @@ const OperatorModalUpdate = (props) => {
   // }, [selected]);
 
   useEffect(()=> {
-    if (operatorZone) {
+    if (operatorZone &&zones) {
       const body = [];
       operatorZone.forEach((res)=> {
-        body.push({ value: res.zoneCode, label: res.zoneCode });
+        zones.map(zone=> {
+          if(res.zoneCode == zone.id) {
+            body.push({ value: zone.id, label: zone.zone });
+          }
+        })
+
         setSelected1(body);
       })
     }
-  }, [operatorZone]);
+  }, [operatorZone, zones]);
 
   useEffect(()=> {
-    if (operatorMode) {
+    if (operatorMode && modes) {
       const body = [];
       operatorMode.forEach((res)=> {
-        body.push({ value: res.modecode, label: res.modecode });
+        modes.map(mode=> {
+          if(res.modecode == mode.id) {
+            body.push({ value: mode.id, label: mode.mode });
+          }
+        })
+
         setSelected2(body);
       })
     }
-  }, [operatorMode]);
+  }, [operatorMode, modes]);
 
   useEffect(()=> {
-    if (operatorService) {
+    if (operatorService && services) {
       const body = [];
       operatorService.forEach((res)=> {
-        body.push({ value: res.servicecode, label: res.servicecode });
+        services.map(service=> {
+          if(res.servicecode == service.id) {
+            body.push({ value: service.id, label: service.service });
+          }
+        })
+
         setSelected3(body);
       })
     }
-  }, [operatorService]);
+  }, [operatorService, services]);
 
   useEffect(()=> {
-    if (operatorStation) {
+    if (operatorStation && stations) {
       const body = [];
       operatorStation.forEach((res)=> {
-        body.push({ value: res.stationcode, label: res.stationcode });
+        stations.map(station=> {
+          if(res.stationcode == station.id) {
+            body.push({ value: station.id, label: station.station });
+          }
+        })
+
         setSelected4(body);
       })
     }
-  }, [operatorStation]);
+  }, [operatorStation, stations]);
 
 
   useEffect(()=> {
@@ -353,7 +373,7 @@ const OperatorModalUpdate = (props) => {
     if (zones) {
       const body = [];
       zones.forEach((res)=> {
-        body.push({ value: res.zone, label: res.zone });
+        body.push({ value: res.id, label: res.zone });
         setZoneSelected(body);
       })
     }
@@ -375,7 +395,7 @@ const OperatorModalUpdate = (props) => {
     if (modes) {
       const body = [];
       modes.forEach((res)=> {
-        body.push({ value: res.mode, label: res.mode });
+        body.push({ value: res.id, label: res.mode });
         setModeSelected(body);
       })
     }
@@ -385,7 +405,7 @@ const OperatorModalUpdate = (props) => {
     if (services) {
       const body = [];
       services.forEach((res)=> {
-        body.push({ value: res.service, label: res.service });
+        body.push({ value: res.id, label: res.service });
         setServiceSelected(body);
       })
     }
@@ -395,7 +415,7 @@ const OperatorModalUpdate = (props) => {
     if (stations) {
       const body = [];
       stations.filter(station => station.service !== 'First mile - Last mile').forEach((res)=> {
-        body.push({ value: res.station, label: res.station });
+        body.push({ value: res.id, label: res.station });
         setStationSelected(body);
       })
     }

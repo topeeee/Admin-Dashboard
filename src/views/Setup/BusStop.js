@@ -112,7 +112,7 @@ const BusStops = ({BusStopUser, busStops, isLoading,RouteUser, routes, areas, ge
             </CardHeader>
             <CardBody>
               {isLoading && <Spinner />}
-              {(busStops && busStops.length === 0) && <div className="animated fadeIn pt-1 text-center">No Bus Stops Available</div>}
+              {(busStops && busStops.length === 0 && !isLoading) && <div className="animated fadeIn pt-1 text-center">No Bus Stops Available</div>}
               {(busStops && busStops.length > 0 && !isLoading) &&
               <Table responsive hover>
                 <thead className={isAdmin? 'bg-dark': 'bg-twitter'} style={{color: '#696969'}}>

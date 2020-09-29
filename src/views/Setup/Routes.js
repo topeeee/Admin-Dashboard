@@ -7,9 +7,10 @@ import {RouteUser} from "../../store/actions/routeAction";
 import RouteHeader from "./components/RouteHeader";
 import {getAreas} from "../../store/actions/areaAction";
 import Spinner from "../../spinner/Spinner";
-import {isAdmin, isLamata, isOperator, OperatorName} from "../../environments/constants";
+import {isAdmin, isLamata, isOperator, OperatorId, OperatorName} from "../../environments/constants";
 import RouteActionBtn from "./components/RouteActionBtn";
 import api from "../../environments/environment";
+import {ZoneUser} from "../../store/actions/zoneAction";
 
 
 
@@ -27,18 +28,24 @@ function UserRow(props) {
   )
 }
 
-const Routes = ({RouteUser, routes, isLoading, areas, getAreas}) => {
+const Routes = ({RouteUser, routes, isLoading, areas, getAreas, zones, ZoneUser}) => {
   const [operatorZone, setOperatorZone] = useState('');
   const [area, setArea] = useState('');
 
- async function getOperatorZone() {
+  async function getOperatorZone() {
     try {
-      const res = await axios.get(`${api.operatorZone}/api/all/operatorzones/`);
-          res.data.map(operatorZone => {
-            if(operatorZone.operatorName === OperatorName) {
-              setOperatorZone(operatorZone.zoneCode)
+      const res = await  axios.get(`${api.operatorZone}/api/all/operatorzones/`);
+      res.data.map(operatorZone => {
+        if(operatorZone.operatorName == OperatorId) {
+          zones.map(zone=> {
+            if(zone.id == operatorZone.zoneCode) {
+              setOperatorZone(zone.zone)
             }
           })
+
+        }
+      })
+
     }catch (e) {
 
     }
@@ -57,7 +64,8 @@ const Routes = ({RouteUser, routes, isLoading, areas, getAreas}) => {
   useEffect(()=>{
     RouteUser();
     getAreas();
-    getOperatorZone()
+    getOperatorZone();
+    ZoneUser();
   },[]);
 
   return (
@@ -106,6 +114,7 @@ function mapDispatchToProps(dispatch) {
   return {
     RouteUser: () => dispatch(RouteUser()),
     getAreas: () => dispatch(getAreas()),
+    ZoneUser: () => dispatch(ZoneUser()),
   };
 }
 
@@ -113,7 +122,7 @@ const mapStateToProps = state => ({
   routes: state.route.routes,
   isLoading: state.route.isLoading,
   areas: state.area.areas,
-
+  zones: state.zone.zones,
 });
 
 export default connect(mapStateToProps,mapDispatchToProps)(Routes);

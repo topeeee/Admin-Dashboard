@@ -9,10 +9,12 @@ import VehicleHeader from "./components/VehicleHeader";
 import VehicleActionBtn from "./components/VehicleActionBtn";
 import {isAdmin, isLamata, isOperator, isPartner} from "../../environments/constants";
 import Pagination from "react-js-pagination";
+import {getOperators} from "../../store/actions/operatorAction";
 
 
 function UserRow(props) {
   const user = props.user;
+  const operators = props.operators
 
   const getBadge = (status) => {
     return status === 'Active' ? 'success' :
@@ -20,6 +22,20 @@ function UserRow(props) {
             status === 'Pending' ? 'warning' :
             'primary'
   };
+  const getOperator = (id)=> {
+    let operatorA = '';
+    if(operators && id) {
+      operators.map(operator=> {
+        if(operator.id == id) {
+          operatorA = operator.name
+        }
+      })
+      if(operatorA) {
+        return operatorA
+      } else return 'Not available'
+    }
+  }
+
   return (
 
     <tr key={user.id}>
@@ -28,7 +44,7 @@ function UserRow(props) {
       {(isAdmin || isOperator|| isPartner) && <td>{user.vehicle_model}</td>}
       {(isAdmin || isOperator|| isPartner) &&<td>{user.plate_number}</td>}
       <td>{user.capacity}</td>
-      {(isAdmin || isLamata)?  <td>{user.operator}</td>: null}
+      {(isAdmin || isLamata)?  <td>{getOperator(user.operator)}</td>: null}
       {(((user.assigned_driver == "1") && (isAdmin || isOperator|| isPartner))) && <td><Badge color={getBadge("Active")}>Yes</Badge></td>}
       {(((user.assigned_driver == null) && (isAdmin || isOperator|| isPartner)) ||((user.assigned_driver == "null") && (isAdmin || isOperator|| isPartner))) && <td><Badge color={getBadge("Inactive")}>No</Badge></td>}
       {(user.status == null) && <td><Badge color={getBadge("Pending")}>Pending</Badge></td>}
@@ -39,7 +55,7 @@ function UserRow(props) {
   )
 }
 
-const PendingVehicles = ({getVehicles, vehicles, vehicle, isLoading,  searchVehicle, error}) => {
+const PendingVehicles = ({getVehicles, vehicles, vehicle, isLoading,  searchVehicle, error, operators, getOperators}) => {
   const [formData, setFormData] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(10);
@@ -74,7 +90,8 @@ const PendingVehicles = ({getVehicles, vehicles, vehicle, isLoading,  searchVehi
   },[vehicles, formData]);
 
   useEffect(()=>{
-      getVehicles()
+      getVehicles();
+      getOperators();
   },[]);
 
 
@@ -144,7 +161,7 @@ const PendingVehicles = ({getVehicles, vehicles, vehicle, isLoading,  searchVehi
                 </thead>
                 <tbody>
                 {posts && currentPosts.map((vehicle, index) =>
-                  <UserRow key={index} user={vehicle}/>
+                  <UserRow key={index} user={vehicle} operators={operators}/>
                 )}
                 {vehicle &&
                 <UserRow user={vehicle}/>
@@ -174,7 +191,8 @@ const PendingVehicles = ({getVehicles, vehicles, vehicle, isLoading,  searchVehi
 function mapDispatchToProps(dispatch) {
   return {
     getVehicles: () => dispatch(getVehicles()),
-    searchVehicle: (id) => dispatch(searchVehicle(id))
+    searchVehicle: (id) => dispatch(searchVehicle(id)),
+    getOperators: () => dispatch(getOperators()),
   };
 }
 
@@ -182,7 +200,8 @@ const mapStateToProps = state => ({
   vehicles: state.vehicle.vehicles,
   vehicle: state.vehicle.vehicle,
   error: state.vehicle.error,
-  isLoading: state.vehicle.isLoading
+  isLoading: state.vehicle.isLoading,
+  operators: state.operator.operators,
 
 });
 

@@ -3,7 +3,7 @@ import {Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Lab
 import { connect } from "react-redux";
 import {toggleVehicleModalCreate, createVehicle} from "../../store/actions/vehicleAction";
 import {getOperators} from "../../store/actions/operatorAction";
-import {isOperator, isPartner, OperatorName, PartnerId, PartnerName} from "../../environments/constants";
+import {isOperator, isPartner, OperatorId, OperatorName, PartnerId, PartnerName} from "../../environments/constants";
 import {getPartners} from "../../store/actions/partnerAction";
 import {getModes} from "../../store/actions/modeAction";
 
@@ -63,7 +63,7 @@ const VehicleModalCreate = (props) => {
   }, []);
 
 
-  const [formData, setFormData] = useState({vehicle_make: "", vehicle_model: "", mode: "", plate_number: "", capacity: "", operator: isOperator ? OperatorName: '', partner_id: isPartner ? PartnerId: ""});
+  const [formData, setFormData] = useState({vehicle_make: "", vehicle_model: "", mode: "", plate_number: "", capacity: "", operator: isOperator ? OperatorId: '', partner_id: isPartner ? PartnerId: 1});
 
   const onChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -77,6 +77,7 @@ const VehicleModalCreate = (props) => {
     setFormData( {...formData, vehicle_make: "", vehicle_model: "", mode: "", plate_number: "", capacity: "", operator: "", partner_id: "" })
 
   };
+
 
   // useEffect(()=> {
   //  if(isOperator) {
@@ -148,7 +149,7 @@ const VehicleModalCreate = (props) => {
                   <option value="">Select Operator</option>
                   {isPartner?  <option value="All">All</option>: null}
                   {(operators && (isAdmin || isPartner)) && operators.map((operator, index) =>
-                    <option value={operator.name} key={index}>{operator.name}</option>
+                    <option value={operator.id} key={index}>{operator.name}</option>
                   )}
                   {/*{(operators && isAdmin !== admin) && operators.filter(user =>(user.email === isAdmin)).map((operator, index) =>*/}
                   {/*  <option value={operator.name} key={index}>{operator.name}</option>*/}
@@ -156,7 +157,7 @@ const VehicleModalCreate = (props) => {
 
 
                 </Input>}
-                {(operators && isOperator) && <Input type="text"  name="operator" readOnly={true} onChange={onChange} value={operator} required />}
+                {(operators && isOperator) && <Input type="text"  name="operator" readOnly={true}  value={OperatorName} required />}
               </Col>
               <Col md="6">
                 {isAdmin || isOperator ?  <Label for="name" className="font-weight-bold mb-0 text-info">Partner</Label>: null}

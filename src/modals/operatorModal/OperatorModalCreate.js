@@ -99,7 +99,7 @@ const OperatorModalCreate = (props) => {
   const setOperatorZones = async () => {
     try {
     await  selected1.forEach((res)=> {
-        const body = {zoneCode: res.value, operatorId: operatorCreated.id, operatorName: operatorCreated.name};
+        const body = {zoneCode: res.value, operatorId: operatorCreated.id, operatorName: operatorCreated.id};
         axios.post(`${api.operatorZone}/api/me/operatorzones/`, body)
       })
     }catch (e) {
@@ -108,10 +108,11 @@ const OperatorModalCreate = (props) => {
 
   };
 
+
   const setOperatorService = async () => {
     try {
     await  selected.forEach((res)=> {
-        const body = {servicecode: res.value, operator_name: operatorCreated.name};
+        const body = {servicecode: res.value, operator_name: operatorCreated.id};
         axios.post(`${api.operatorService}/api/me/operatorservices/`, body)
       })
     }catch (e) {
@@ -122,7 +123,7 @@ const OperatorModalCreate = (props) => {
   const setOperatorModes = async () => {
     try {
       await selected2.forEach((res)=> {
-        const body = {modecode: res.value,  operator_name: operatorCreated.name};
+        const body = {modecode: res.value,  operator_name: operatorCreated.id};
         axios.post(`${api.operatorMode}/api/me/operatormodes/`, body)
       })
     }catch (e) {
@@ -133,7 +134,7 @@ const OperatorModalCreate = (props) => {
   const setOperatorStations = async () => {
     try {
       await selected3.forEach((res)=> {
-        const body = {stationcode: res.value,  operator_name: operatorCreated.name};
+        const body = {stationcode: res.value,  operator_name: operatorCreated.id};
         axios.post(`${api.operatorStation}/api/me/operatorstations/`, body)
       })
     }catch (e) {
@@ -179,42 +180,32 @@ const OperatorModalCreate = (props) => {
     getStations();
   },[]);
 
-  useEffect(()=> {
-    if (zones) {
-      const body = [];
-      zones.forEach((res)=> {
-      body.push({ value: res.zone, label: res.zone });
-        setZoneSelected(body);
-      })
-    }
-  }, [zones]);
+  // useEffect(()=> {
+  //   if (zones) {
+  //     const body = [];
+  //     zones.forEach((res)=> {
+  //     body.push({ value: res.id, label: res.zone });
+  //       setZoneSelected(body);
+  //     })
+  //   }
+  // }, [zones]);
 
   useEffect(()=> {
     if (zones) {
       const body = [];
       zones.forEach((res)=> {
-        body.push({ value: res.zone, label: res.zone });
+        body.push({ value: res.id, label: res.zone });
         setZoneSelected(body);
       })
     }
   }, [zones]);
 
-
-  useEffect(()=> {
-    if (states) {
-      const body = [];
-      states.forEach((res)=> {
-        body.push({ value: res.xstate, label: res.xstate });
-        setStateSelected(body);
-      })
-    }
-  }, [states]);
 
   useEffect(()=> {
     if (modes) {
       const body = [];
       modes.forEach((res)=> {
-        body.push({ value: res.mode, label: res.mode });
+        body.push({ value: res.id, label: res.mode });
         setModeSelected(body);
       })
     }
@@ -224,7 +215,7 @@ const OperatorModalCreate = (props) => {
     if (services) {
       const body = [];
       services.forEach((res)=> {
-        body.push({ value: res.service, label: res.service });
+        body.push({ value: res.id, label: res.service });
         setServiceSelected(body);
       })
     }
@@ -234,29 +225,11 @@ const OperatorModalCreate = (props) => {
     if (stations) {
       const body = [];
       stations.filter(station => station.service !== 'First mile - Last mile').forEach((res)=> {
-        body.push({ value: res.station, label: res.station });
+        body.push({ value: res.id, label: res.station });
         setStationSelected(body);
       })
     }
   }, [stations]);
-
-  // useEffect(()=> {
-  //   if(selected) {
-  //     selected.map(selectedService => {
-  //       if(selectedService.value === "First mile - Last mile") {
-  //         setIsZone(true)
-  //       } else {setIsZone(false)}
-  //     })
-  //   }
-  // },[selected])
-
-  // const options = [
-  //   { value: 'First Mile Last Mile', label: 'First Mile Last Mile' },
-  //   { value: 'Ferry', label: 'Ferry' },
-  //   { value: 'Large Bus', label: 'Large Bus' },
-  //   { value: 'Mini Bus', label: 'Mini Bus' },
-  //   { value: 'Car', label: 'Mini Car' }
-  // ];
 
 
   return (

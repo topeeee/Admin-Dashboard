@@ -13,7 +13,7 @@ import api from '../../environments/environment'
 import {getModes} from "../../store/actions/modeAction";
 import Select from "react-select";
 import {BusStopUser} from "../../store/actions/busStopAction";
-import {isOperator, OperatorName} from "../../environments/constants";
+import {isOperator, OperatorId, OperatorName} from "../../environments/constants";
 
 const animatedComponents = makeAnimated();
 
@@ -87,7 +87,7 @@ const BusAssistantModalCreate = (props) => {
   const [form1, setForm1] = useState(true);
   const [form2, setForm2] = useState(false);
   const [regPin, setRegpin] = useState('');
-  const [operatorId] = useState(isOperator? OperatorName: '');
+  const [operatorId] = useState(isOperator? OperatorId: '');
   const [selected, setSelected] = useState([]);
   const [stationSelected, setStationSelected] = useState([]);
 

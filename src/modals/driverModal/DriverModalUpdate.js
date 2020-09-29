@@ -225,7 +225,7 @@ const DriverModalUpdate = (props) => {
       drivers.map(driver=> {
         if(driver.id === UpdateDriverId){
           setFormData({
-            firstname: driver.firstname, lastname: driver.lastname, residentialaddress: driver.residentialaddress, email: driver.email, phoneno: driver.phoneno, status: "0", pin: "", bankname: driver.bankname, accountname: driver.accountname, accountnumber: driver.accountnumber, zone: "", area: "", route: "", geofencedarea: "", appstatus: ""
+            firstname: driver.firstName, lastname: driver.lastName, residentialddress: driver.residentialAddress, email: driver.email, phoneno: driver.phoneNo, status: "", pin: "", bankname: driver.bankName, accountname: driver.accountName, accountumber: driver.accountNumber, zone: "", area: "", route: "", geofencedarea: "", appstatus: ""
           });
           setZoneInput(driver.zone);
           setAreaInput(driver.area);

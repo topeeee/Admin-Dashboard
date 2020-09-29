@@ -8,7 +8,7 @@ import {
   LOADING_BUS_STOP} from "../actionTypes"
 import  axios from 'axios'
 import api from "../../environments/environment";
-import {isOperator, OperatorName} from "../../environments/constants";
+import {isOperator, OperatorId, OperatorName} from "../../environments/constants";
 
 
 
@@ -21,15 +21,20 @@ export const BusStopUser = () => async dispatch => {
       const res1 = await  axios.get(`${api.operatorZone}/api/all/operatorzones/`);
       const res2 = await axios.get(`${api.area}/api/xareas/`);
       const res3 = await axios.get(`${api.route}/api/routes/`);
+      const res4 = await axios.get(`${api.zone}/api/zones/`)
       res1.data.map(operatorZone => {
-        if(operatorZone.operatorName === OperatorName) {
-         res2.data.map(area => {
-           if(area.zonecode === operatorZone.zoneCode) {
-             res3.data.map(route => {
-               if(route.areacode === area.xarea) {
-                 res.data.map(busStops => {
-                   if(busStops.routecode === route.route) {
-                     operatorBusStops.push(busStops)
+        if(operatorZone.operatorName == OperatorId) {
+         res4.data.map(zone=> {
+           if(zone.id == operatorZone.zoneCode) {
+             res2.data.map(area => {
+               if(area.zonecode === zone.zone) {
+                 res3.data.map(route => {
+                   if(route.areacode === area.xarea) {
+                     res.data.map(busStops => {
+                       if(busStops.routecode === route.route) {
+                         operatorBusStops.push(busStops)
+                       }
+                     })
                    }
                  })
                }

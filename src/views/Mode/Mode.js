@@ -117,7 +117,7 @@ const Mode = ({getModes, modes, mode, isLoading,  searchMode, error, getStates, 
               <div className="animated fadeIn pt-1 text-center">No Modes Available</div>}
               {((modes && modes.length > 0) || mode) &&
               <Table responsive hover>
-                <thead className={isLamata? 'bg-twitter': 'bg-dark'} style={{color: '#696969'}}>
+                <thead className={!isAdmin? 'bg-twitter': 'bg-dark'} style={{color: '#696969'}}>
                 <tr>
                   <th scope="col">Mode</th>
                   {/*<th scope="col">Mode Code</th>*/}

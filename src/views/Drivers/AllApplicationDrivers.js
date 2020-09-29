@@ -17,9 +17,9 @@ function UserRow(props) {
 
   return (
     <tr key={user.id}>
-      <td>{user.firstname}</td>
-      <td>{user.lastname}</td>
-      <td>{user.phoneno}</td>
+      <td>{user.firstName}</td>
+      <td>{user.lastName}</td>
+      <td>{user.phoneNo}</td>
       <td> <ApplicationDriverActionBtn user={user} /> </td>
     </tr>
   )

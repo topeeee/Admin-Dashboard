@@ -8,7 +8,7 @@ import {faEnvelopeSquare, faFilePdf, faPrint} from "@fortawesome/free-solid-svg-
 import Spinner from "../../spinner/Spinner";
 import AreaHeader from "./components/AreaHeader";
 import {ZoneUser} from "../../store/actions/zoneAction";
-import {isAdmin, isLamata, isOperator, OperatorName} from "../../environments/constants";
+import {isAdmin, isLamata, isOperator, OperatorId, OperatorName} from "../../environments/constants";
 import AreaActionBtn from "./components/AreaActionBtn";
 import api from "../../environments/environment";
 
@@ -36,8 +36,13 @@ const Area = ({getAreas, areas, area, isLoading,  searchArea, error, zones,  Zon
     try {
     const res = await  axios.get(`${api.operatorZone}/api/all/operatorzones/`);
           res.data.map(operatorZone => {
-            if(operatorZone.operatorName === OperatorName) {
-              setOperatorZone(operatorZone.zoneCode)
+            if(operatorZone.operatorName == OperatorId) {
+             zones.map(zone=> {
+               if(zone.id == operatorZone.zoneCode) {
+                 setOperatorZone(zone.zone)
+               }
+             })
+
             }
           })
 

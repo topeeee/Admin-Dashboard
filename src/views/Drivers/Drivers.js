@@ -12,12 +12,14 @@ import api from "../../environments/environment";
 import Pagination from "react-js-pagination";
 import {isAdmin, isOperator} from "../../environments/constants";
 import {getVehicles} from "../../store/actions/vehicleAction";
+import {getOperators} from "../../store/actions/operatorAction";
 
 
 
 
 function UserRow(props) {
   const user = props.user;
+  const operators =props.operators
 
   const getBadge = (status) => {
     return status === 'Active' ? 'success' :
@@ -27,12 +29,26 @@ function UserRow(props) {
             'primary'
   };
 
+  const getOperator = (id)=> {
+    let operatorA = '';
+    if(operators && id) {
+      operators.map(operator=> {
+        if(operator.id == id) {
+          operatorA = operator.name
+        }
+      })
+      if(operatorA) {
+        return operatorA
+      } else return 'Not available'
+    }
+  }
+
   return (
     <tr key={user.id}>
-      <td>{user.firstname}</td>
-      <td>{user.lastname}</td>
-      <td>{user.phoneno}</td>
-      <td>{user.operatorid}</td>
+      <td>{user.firstName}</td>
+      <td>{user.lastName}</td>
+      <td>{user.phoneNo}</td>
+      <td>{getOperator(user.operatorId)}</td>
       {(user.status === "1" || user.status === "3") && <td><Badge color={getBadge("Active")}>Active</Badge></td> }
       {(user.status === "0") && <td><Badge color={getBadge("Inactive")}>Inactive</Badge></td> }
       {(user.status === "") && <td><Badge color={getBadge("Pending")}>Pending</Badge></td> }
@@ -41,7 +57,7 @@ function UserRow(props) {
   )
 }
 
-const Drivers = ({getDrivers, drivers, driver, isLoading, error,  approveDriver, getDriverVehicleId, getDriverVehicleId2, clearDriverVehicleId, vehicles, getVehicles}) => {
+const Drivers = ({getDrivers, drivers, driver, isLoading, error,  approveDriver, getDriverVehicleId, getDriverVehicleId2, clearDriverVehicleId, vehicles, getVehicles, operators, getOperators}) => {
   const [formData, setFormData] = useState('');
   const [driverVehicle, setDriverVehicle] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -80,6 +96,7 @@ useEffect(()=> {
   useEffect(()=>{
       getDrivers();
       getVehicles();
+      getOperators();
       },[]);
 
   function getDriverVehicle() {
@@ -183,7 +200,7 @@ useEffect(()=> {
                 </thead>
                 <tbody>
                 {posts && currentPosts.map((user, index) =>
-                  <UserRow key={index} user={user} approved={approveDriver} driverVehicles={driverVehicle} vehicles={vehicles}/>
+                  <UserRow key={index} user={user} approved={approveDriver} driverVehicles={driverVehicle} vehicles={vehicles} operators={operators}/>
                 )}
                 {driver &&
                 <UserRow user={driver} approved={approveDriver}/>
@@ -223,6 +240,7 @@ function mapDispatchToProps(dispatch) {
     approveDriver: (id) =>dispatch(approveDriver(id)),
     clearDriverVehicleId: () =>dispatch(clearDriverVehicleId()),
     getVehicles: () => dispatch(getVehicles()),
+    getOperators: () => dispatch(getOperators()),
   };
 }
 
@@ -235,6 +253,7 @@ const mapStateToProps = state => ({
   getDriverVehicleId: state.driver.getDriverVehicleId,
   getDriverVehicleId2: state.driver.getDriverVehicleId2,
   vehicles: state.vehicle.vehicles,
+  operators: state.operator.operators,
 });
 
 export default connect(mapStateToProps,mapDispatchToProps)(Drivers);

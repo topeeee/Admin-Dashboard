@@ -13,7 +13,7 @@ import {
 } from "../actionTypes"
 import  axios from 'axios'
 import api from "../../environments/environment";
-import {isAdmin, isLamata, isOperator, isPartner, OperatorName} from "../../environments/constants";
+import {isAdmin, isLamata, isOperator, isPartner, OperatorId} from "../../environments/constants";
 
 
 
@@ -23,10 +23,10 @@ export const getModes = () => async dispatch => {
     dispatch(isLoading());
     const res = await axios.get(`${api.mode}/api/modes/`);
       if(isOperator) {
-        const res1 =  await axios.get(`${api.operatorMode}/api/mode/?operator_name=${OperatorName}`)
+        const res1 =  await axios.get(`${api.operatorMode}/api/mode/?operator_name=${OperatorId}`)
         res1.data.forEach(operatorMode => {
           res.data.forEach(mode=> {
-            if(mode.mode === operatorMode.modecode) {
+            if(mode.id == operatorMode.modecode) {
               newOperatorMode.push(mode)
             }
           })

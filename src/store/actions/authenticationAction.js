@@ -205,7 +205,7 @@ export const getOperator = (username) => async dispatch => {
         sessionStorage.setItem('OperatorId', operator.id);
         if(res1.data) {
           res1.data.map(operatorZone => {
-            if(operatorZone.operatorName === operator.name) {
+            if(operatorZone.operatorName == operator.id) {
               sessionStorage.setItem('OperatorZone', 'yes');
             }
           })

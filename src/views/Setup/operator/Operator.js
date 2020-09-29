@@ -6,15 +6,39 @@ import axios from "axios"
 import api from "../../../environments/environment";
 import {getVehicles} from "../../../store/actions/vehicleAction";
 import {isAdmin, isLamata} from "../../../environments/constants";
+import {BusStopUser} from "../../../store/actions/busStopAction";
+import {ZoneUser} from "../../../store/actions/zoneAction";
+import {getModes} from "../../../store/actions/modeAction";
+import {getService} from "../../../store/actions/serviceAction";
 
 
-const Operator = ({getOperators, operators, match, states, vehicles, getVehicles})=> {
+const Operator = (props)=> {
+
+  const {
+    getOperators,
+    operators,
+    match,
+    modes,
+    vehicles,
+    getVehicles,
+    busStops,
+    BusStopUser,
+    zones,
+    ZoneUser,
+    getModes,
+    services,
+    getService
+  } = props
 
   const [operator, setOperator] = useState({});
-  const [operatorZone, setOperatorZone] = useState('');
-  const [operatorStation, setOperatorStation] = useState('');
-  const [operatorMode, setOperatorMode] = useState('');
-  const [operatorService, setOperatorService] = useState('')
+  const [operatorZone, setOperatorZone] = useState([]);
+  const [zone, setZone] = useState('');
+  const [operatorStation, setOperatorStation] = useState([]);
+  const [station, setStation] = useState('')
+  const [operatorMode, setOperatorMode] = useState([]);
+  const [mode, setMode] = useState('');
+  const [operatorService, setOperatorService] = useState([])
+  const [service, setService] = useState('')
   const [suspension, setSuspension] = useState('');
   const [penalty, setPenalty] = useState('')
 
@@ -30,11 +54,11 @@ const Operator = ({getOperators, operators, match, states, vehicles, getVehicles
  async function getOperatorMode() {
    const modeArray = [];
     try {
-    const res = await  axios.get(`${api.operatorMode}/api/mode/?operator_name=${operator.name}`);
+    const res = await  axios.get(`${api.operatorMode}/api/mode/?operator_name=${operator.id}`);
     res.data.map(mode=> {
       modeArray.push(mode.modecode)
     })
-      setOperatorMode(modeArray.join(", "));
+      setOperatorMode(modeArray);
     }catch (e) {
 
     }
@@ -48,7 +72,7 @@ const Operator = ({getOperators, operators, match, states, vehicles, getVehicles
      res.data.map(zone=> {
        zoneArray.push(zone.zoneCode)
      })
-     setOperatorZone(zoneArray.join(", "));
+     setOperatorZone(zoneArray);
 
    } catch (e) {
 
@@ -59,11 +83,11 @@ const Operator = ({getOperators, operators, match, states, vehicles, getVehicles
   async function getOperatorStation() {
     const stationArray = [];
     try {
-      const res = await axios.get(`${api.operatorStation}/api/station/?operator_name=${operator.name}`)
+      const res = await axios.get(`${api.operatorStation}/api/station/?operator_name=${operator.id}`)
       res.data.map(station=> {
         stationArray.push(station.stationcode)
       })
-      setOperatorStation(stationArray.join(", "));
+      setOperatorStation(stationArray);
     }catch (e) {
 
     }
@@ -72,11 +96,11 @@ const Operator = ({getOperators, operators, match, states, vehicles, getVehicles
   async function getOperatorService() {
     const serviceArray = [];
     try {
-      const res = await axios.get(`${api.operatorService}/api/mode/?operator_name=${operator.name}`)
+      const res = await axios.get(`${api.operatorService}/api/mode/?operator_name=${operator.id}`)
       res.data.map(service=> {
         serviceArray.push(service.servicecode)
       })
-      setOperatorService(serviceArray.join(", "));
+      setOperatorService(serviceArray);
     }catch (e) {
 
     }
@@ -106,6 +130,10 @@ const Operator = ({getOperators, operators, match, states, vehicles, getVehicles
     getOperators();
     getComment();
     getVehicles();
+    BusStopUser();
+    ZoneUser();
+    getModes();
+    getService();
   },[]);
 
 useEffect(()=>{
@@ -121,6 +149,62 @@ useEffect(()=>{
   }
   },[operator]);
 
+
+  useEffect(()=> {
+    if(operatorStation && busStops) {
+      const station = [];
+      operatorStation.forEach(operatorstation=> {
+        busStops.map(busStop => {
+          if(busStop.id == operatorstation) {
+            station.push(busStop.station)
+          }
+        })
+      })
+      setStation(station.join(","))
+    }
+  },[operatorStation, busStops])
+
+  useEffect(()=> {
+    if(operatorZone && zones) {
+      const zoneA = [];
+      operatorZone.forEach(operatorzone=> {
+        zones.map(zone => {
+          if(zone.id == operatorzone) {
+            zoneA.push(zone.zone)
+          }
+        })
+      })
+      setZone(zoneA.join(","))
+    }
+  },[operatorZone, zones])
+
+  useEffect(()=> {
+    if(operatorMode && modes) {
+      const modeA = [];
+      operatorMode.forEach(operatormode=> {
+        modes.map(mode => {
+          if(mode.id == operatormode) {
+            modeA.push(mode.mode)
+          }
+        })
+      })
+      setMode(modeA.join(","))
+    }
+  },[operatorMode, modes])
+
+  useEffect(()=> {
+    if(operatorService && services) {
+      const serviceA = [];
+      operatorService.forEach(operatorservice=> {
+        services.map(service => {
+          if(service.id == operatorservice) {
+            serviceA.push(service.service)
+          }
+        })
+      })
+      setService(serviceA.join(","))
+    }
+  },[operatorService, services])
 
     return (
       <div className="animated fadeIn">
@@ -173,19 +257,19 @@ useEffect(()=>{
                   </tr>
                   <tr>
                     <td><strong>Mode(s)</strong></td>
-                    <td>{operatorMode.length > 0 ? operatorMode: 'Not Available'}</td>
+                    <td>{operatorMode.length > 0 ? mode: 'Not Available'}</td>
                   </tr>
                   <tr>
                     <td><strong>Zone(s)</strong></td>
-                    <td>{operatorZone.length > 0 ? operatorZone: 'Not Available'}</td>
+                    <td>{operatorZone.length > 0 ? zone: 'Not Available'}</td>
                   </tr>
                   {operatorStation ? <tr>
                     <td><strong>Station(s)</strong></td>
-                    <td>{operatorStation}</td>
+                    <td>{station}</td>
                   </tr>:null}
                   <tr>
                     <td><strong>Service(s)</strong></td>
-                    <td>{operatorService.length > 0 ? operatorService: 'Not Available'}</td>
+                    <td>{operatorService.length > 0 ? service: 'Not Available'}</td>
                   </tr>
                   {/*<tr>*/}
                   {/*  <td><strong>State</strong></td>*/}
@@ -230,6 +314,10 @@ function mapDispatchToProps(dispatch) {
     getOperators: () => dispatch(getOperators()),
     searchOperator: (id) => dispatch(searchOperator(id)),
     getVehicles: () => dispatch(getVehicles()),
+    BusStopUser: () => dispatch(BusStopUser()),
+    ZoneUser: () => dispatch(ZoneUser()),
+    getModes: () => dispatch(getModes()),
+    getService: () => dispatch(getService()),
   };
 }
 
@@ -240,6 +328,10 @@ const mapStateToProps = state => ({
   isLoading: state.operator.isLoading,
   states: state.state.states,
   vehicles: state.vehicle.vehicles,
+  busStops: state.busStop.busStops,
+  zones: state.zone.zones,
+  modes: state.mode.modes,
+  services: state.service.services,
 
 
 

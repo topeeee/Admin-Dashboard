@@ -8,7 +8,7 @@ import {
 } from "../actionTypes"
 import  axios from 'axios'
 import api from "../../environments/environment";
-import {isOperator, OperatorName} from "../../environments/constants";
+import {isOperator, OperatorId} from "../../environments/constants";
 
 
 
@@ -18,11 +18,11 @@ export const ZoneUser = () => async dispatch => {
     const operatorZones = [];
     const res = await axios.get(`${api.zone}/api/zones/`);
     if(isOperator && res.data.length > 0) {
-      const res1 = await axios.get(`${api.operatorZone}/api/operatorzones/?search=${OperatorName}`);
+      const res1 = await axios.get(`${api.operatorZone}/api/operatorzones/?search=${OperatorId}`);
       if(res1.data.length > 0) {
         res1.data.map(operatorZone => {
           res.data.map(zone => {
-            if(zone.zone === operatorZone.zoneCode){
+            if(zone.id == operatorZone.zoneCode){
               operatorZones.push(zone)
             }
           })

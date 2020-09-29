@@ -31,6 +31,7 @@ function mapDispatchToProps(dispatch) {
     getVehicles: () => dispatch(getVehicles()),
     getAreas: () => dispatch(getAreas()),
 
+
   };
 }
 
@@ -82,6 +83,7 @@ const DriverModalCreate = (props) => {
   const [operatorZone, setOperatorZone] = useState([]);
   const [operatorMode, setOperatorMode] = useState([]);
   const [operatorId, setOperatorId] = useState('');
+  // const [zoneA, setZoneA] = useState('');
 
 
   async function getOperatorZone() {
@@ -197,7 +199,7 @@ const DriverModalCreate = (props) => {
 
   const onSubmit = async (e) => {
      e.preventDefault();
-    createDriver(vehicleId, operatorInput, operatorId, firstname, lastname, residentialaddress, email, phoneno, status, regPin, bankname, accountname, accountnumber, zoneInput, areaInput, routeInput, geofencedarea, appstatus);
+    createDriver(vehicleId, operatorInput, operatorInput, firstname, lastname, residentialaddress, email, phoneno, status, regPin, bankname, accountname, accountnumber, zoneInput, areaInput, routeInput, geofencedarea, appstatus);
     assignVehicle(vehicleId, "1");
     setFormData({
       firstname: "", lastname: "", residentialaddress: "", email: "", phoneno: "", status: "0", pin: "", bankname: "", accountname: "", accountnumber: "", zone: "", area: "", route: "", geofencedarea: "", appstatus: ""
@@ -208,6 +210,18 @@ const DriverModalCreate = (props) => {
     setForm4(false);
 
   };
+
+  var zoneA = '';
+  const setZone = (id)=> {
+    if(zones && id) {
+      zones.map(zone=> {
+        if(zone.id == id) {
+         zoneA = zone.zone
+        }
+      })
+    }
+    return zoneA
+  }
 
 
 
@@ -272,6 +286,7 @@ const DriverModalCreate = (props) => {
 
   const toggle = () => {toggleDriverModalCreate()};
 
+
   return (
     <div>
       <Modal isOpen={driverModalCreate} toggle={toggle} className={className}>
@@ -316,7 +331,7 @@ const DriverModalCreate = (props) => {
                   <option value="">Select Operator</option>
 
                   {operators && operators.map((operator, index) =>
-                    <option value={operator.name} key={index}>{operator.name}</option>
+                    <option value={operator.id} key={index}>{operator.name}</option>
                   )}
                 </Input>}
                 {(operators && isOperator) &&
@@ -333,7 +348,7 @@ const DriverModalCreate = (props) => {
                   // required
                 >
                   <option value="">Select Vehicle Mode</option>
-                  {(vehicles && operatorInput) && vehicles.filter((user) => user.operator === operatorInput).map((vehicle, index) =>
+                  {(vehicles && operatorInput) && vehicles.filter((user) => user.operator == operatorInput).map((vehicle, index) =>
                     <option value={vehicle.mode} key={index}>{vehicle.mode}</option>
                   )}
                 </Input>
@@ -387,8 +402,8 @@ const DriverModalCreate = (props) => {
                   // required
                 >
                   <option value="">select Zone</option>
-                  {(operatorZone && operatorInput) && operatorZone.filter((user) => user.operatorName === operatorInput).map((zone, index) =>
-                    <option value={zone.zoneCode} key={index}>{zone.zoneCode}</option>
+                  {(operatorZone && operatorInput) && operatorZone.filter((user) => user.operatorName == operatorInput).map((zone, index) =>
+                    <option value={zone.zoneCode} key={index}>{setZone(zone.zoneCode)}</option>
                   )}
                 </Input>
               </Col>
@@ -403,7 +418,7 @@ const DriverModalCreate = (props) => {
                   // required
                 >
                   <option value="">select Area</option>
-                  {(areas && zoneInput) && areas.filter((user) => user.zonecode === zoneInput).map((area, index) =>
+                  {(areas && zoneInput) && areas.filter((user) => user.zonecode === zoneA).map((area, index) =>
                     <option value={area.xarea} key={index}>{area.xarea}</option>
                   )}
                 </Input>

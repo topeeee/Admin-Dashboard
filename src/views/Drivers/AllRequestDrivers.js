@@ -26,14 +26,14 @@ function UserRow(props) {
 
   return (
     <tr key={user.id}>
-      <td>{user.firstname}</td>
-      <td>{user.lastname}</td>
-      <td>{user.phoneno}</td>
-      <td>{user.residentialaddress}</td>
+      <td>{user.firstName}</td>
+      <td>{user.lastName}</td>
+      <td>{user.phoneNo}</td>
+      <td>{user.residentialAddress}</td>
       <td>{user.email}</td>
       {(user.appstatus === "1") && <td><Badge color={getBadge("Active")}>online</Badge></td> }
       {(user.appstatus === "0") && <td><Badge color={getBadge("Inactive")}>offline</Badge></td> }
-      {(user.appstatus === "") && <td><Badge color={getBadge("Refunds")}>not available</Badge></td> }
+      {(user.appStatus === "") && <td><Badge color={getBadge("Refunds")}>not available</Badge></td> }
       {(user.status === "1") && <td><Badge color={getBadge("Active")}>Active</Badge></td> }
       {(user.status === "0") && <td><Badge color={getBadge("Inactive")}>Inactive</Badge></td> }
       {(user.status === "") && <td><Badge color={getBadge("Pending")}>Pending</Badge></td> }
