@@ -13,7 +13,7 @@ import {
 import  axios from 'axios'
 import api from "../../environments/environment";
 import {createUser} from "./userAction";
-import {isOperator, OperatorName} from "../../environments/constants";
+import {isOperator, OperatorId, OperatorName} from "../../environments/constants";
 
 export const getPartners = () => async dispatch => {
   try {
@@ -21,7 +21,7 @@ export const getPartners = () => async dispatch => {
     const res = await axios.get(`${api.partner}/api/all/partners/`);
     let operatorPartner = [];
    if(isOperator) {
-     const res1 = await axios.get(`${api.vehicle}/api/operator/partners?operator=${OperatorName}`);
+     const res1 = await axios.get(`${api.vehicle}/api/operator/partners?operator=${OperatorId}`);
      if(res1.data.partnerId.length > 0 && res.data.length > 0) {
        res1.data.partnerId.forEach((id=> {
          res.data.map(partner=> {
@@ -54,7 +54,7 @@ export const registerPartner = (username, password, name, email, phoneNo, office
       payload: res.data
     });
     if(res) {
-      dispatch(createPartner(res.data.id, name, email, phoneNo, officeAddress, status, numberOfVehicle, email))
+      dispatch(createPartner(res.data.id, name, email, '+234' + phoneNo.substr(1), officeAddress, status, numberOfVehicle, email))
       dispatch(createUser(name, name, email, email, 'not available', '+234' + phoneNo.substr(1), res.data.id))
 
     }

@@ -35,7 +35,7 @@ export const getDrivers = () => async dispatch => {
   if(isAdmin || isLamata) {
     driverApi = `${api.driver}/api/drivers/`
   }else if(isOperator) {
-    driverApi = `${api.driver}/api/drivers/operator/?operatorid=${OperatorName}`
+    driverApi = `${api.driver}/api/drivers/operator/?operatorid=${OperatorId}`
   }
   try {
     dispatch(isLoading());

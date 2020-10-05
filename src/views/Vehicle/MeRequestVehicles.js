@@ -29,7 +29,7 @@ function UserRow(props) {
       <td>{user.plate_number}</td>
       <td>{user.capacity}</td>
       {partners.length > 0 && partners.map(partner=> {
-        if(partner.id == user.partner_id) {
+        if(partner.id == user.partner) {
           return <td key={[partner.id]}>{partner.name}</td>
         }
       })}

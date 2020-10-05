@@ -37,7 +37,7 @@ export const getVehicles = () => async dispatch => {
   }else if(isOperator) {
     VehicleApi = `${api.vehicle}/api/operators/?operator=${OperatorId}`
   } else if(isPartner) {
-    VehicleApi = `${api.vehicle}/api/partners/?partner_id=${PartnerId}`
+    VehicleApi = `${api.vehicle}/api/partners/?partner=${PartnerId}`
   }
   try {
     dispatch(isLoading());
@@ -91,9 +91,9 @@ export const getVehiclesRequestMe = () => async dispatch => {
 };
 
 
-export const createVehicle = (vehicle_make, vehicle_model, mode, plate_number, capacity, operator, partner_id) => async dispatch => {
+export const createVehicle = (vehicle_make, vehicle_model, mode, plate_number, capacity, operator, partner) => async dispatch => {
   const body = {
-    vehicle_make, vehicle_model, mode, plate_number, capacity, operator, partner_id
+    vehicle_make, vehicle_model, mode, plate_number, capacity, operator, partner
    };
   try {
     const res = await axios.post(`${api.vehicle}/api/me/vehicles/`, body);

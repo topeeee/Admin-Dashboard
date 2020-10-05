@@ -9,6 +9,7 @@ import LamataLogin from "../Pages/Login/LamataLogin";
 import OperatorLogin from "../Pages/Login/OperatorLogin";
 import PartnerLogin from "../Pages/Login/PartnerLogin";
 import ForgetPassword from "../Pages/ForgetPassword/ForgetPassword";
+import LoginType from "../Pages/Login/LoginType";
 // import PrivateRoute from "../../routes/PrivateRoutes";
 
 
@@ -77,6 +78,7 @@ const Home = ({ isAuthenticated, operator, admin, token, partner, lamata}) => {
             <CombineModal />
             <Switch>
               <Route exact path="/forgetpassword" name="Forget Password Page" render={props => <ForgetPassword {...props}/>} />
+              <Route exact path="/account" name="Account Page" render={props => <LoginType {...props}/>} />
               <Route exact path="/login" name="Login Page" render={props => <Login {...props}/>} />
               <Route exact path="/lamata/login" name="Lamata Login Page" render={props => <LamataLogin {...props}/>} />
               <Route exact path="/operator/login" name="Operator Login Page" render={props => <OperatorLogin {...props}/>} />

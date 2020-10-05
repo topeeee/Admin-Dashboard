@@ -77,7 +77,7 @@ export const DirectRegisterOperator = (id, username, password, name, phoneNo) =>
 
 
 export const createOperator = (pin, name,usernameMain, email, phoneNo, officeAddress, status, numberOfVehicle, contactName, contactPhoneNo, contactEmail) => async dispatch => {
-  const body = {pin, name, usernameMain, email, phoneNo, officeAddress, status, numberOfVehicle, contactName, contactPhoneNo, contactEmail};
+  const body = {pin, name, usernameMain, email, phoneNo:'+234' + phoneNo.substr(1), officeAddress, status, numberOfVehicle, contactName, contactPhoneNo, contactEmail};
   try {
     const res = await axios.post(`${api.operator}/api/me/operators/`, body);
     dispatch(DirectRegisterOperator(res.data.id, email, 'password', name, phoneNo))

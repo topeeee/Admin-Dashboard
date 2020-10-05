@@ -14,8 +14,8 @@ const isAdmin = sessionStorage.getItem('isAdmin');
 function mapDispatchToProps(dispatch) {
   return {
     toggleVehicleModalCreate: () => dispatch(toggleVehicleModalCreate()),
-    createVehicle: (vehicle_make, vehicle_model, mode, plate_number, capacity, operator, partner_id) =>
-      dispatch(createVehicle(vehicle_make, vehicle_model, mode, plate_number, capacity, operator, partner_id)),
+    createVehicle: (vehicle_make, vehicle_model, mode, plate_number, capacity, operator, partner) =>
+      dispatch(createVehicle(vehicle_make, vehicle_model, mode, plate_number, capacity, operator, partner)),
     getOperators: () => dispatch(getOperators()),
     getPartners: () => dispatch(getPartners()),
     getModes: () => dispatch(getModes()),
@@ -63,18 +63,18 @@ const VehicleModalCreate = (props) => {
   }, []);
 
 
-  const [formData, setFormData] = useState({vehicle_make: "", vehicle_model: "", mode: "", plate_number: "", capacity: "", operator: isOperator ? OperatorId: '', partner_id: isPartner ? PartnerId: 1});
+  const [formData, setFormData] = useState({vehicle_make: "", vehicle_model: "", mode: "", plate_number: "", capacity: "", operator: isOperator ? OperatorId: '', partner: isPartner ? PartnerId: ''});
 
   const onChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const {
-    vehicle_make, vehicle_model, mode, plate_number, capacity, operator, partner_id
+    vehicle_make, vehicle_model, mode, plate_number, capacity, operator, partner
   } = formData;
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    createVehicle(vehicle_make, vehicle_model, mode, plate_number, capacity, operator, partner_id);
-    setFormData( {...formData, vehicle_make: "", vehicle_model: "", mode: "", plate_number: "", capacity: "", operator: "", partner_id: "" })
+    createVehicle(vehicle_make, vehicle_model, mode, plate_number, capacity, operator, partner);
+    setFormData( {...formData, vehicle_make: "", vehicle_model: "", mode: "", plate_number: "", capacity: "", operator: "", partne: "" })
 
   };
 
@@ -165,7 +165,7 @@ const VehicleModalCreate = (props) => {
                   style={{cursor: 'pointer'}}
                   type="select"
                   name="partner_id"
-                  value={partner_id}
+                  value={partner}
                   onChange={onChange}
                 >
                   <option value="">Select Partner</option>

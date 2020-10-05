@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalHeader} from 'reactstrap';
+import {Button, Col, Form, FormGroup, Label, Modal, ModalBody, ModalHeader} from 'reactstrap';
 import {connect} from "react-redux";
 import {
   approveOperator,
   createOperator,
   getOperators,
-  registerOperator, toggleOperatorModalApprove,
-  toggleOperatorModalCreate
+   toggleOperatorModalApprove,
 } from "../../store/actions/operatorAction";
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
@@ -87,8 +86,8 @@ const OperatorModalApprove = (props) => {
   const [operatorCreated, setOperatorCreated] = useState({});
 
 
-  const onChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
-  const { name, email, phoneNo, officeAddress, status, numberOfVehicle, contactName, contactPhoneNo, contactEmail, pin } = formData;
+  // const onChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+  // const { name, email, phoneNo, officeAddress, status, numberOfVehicle, contactName, contactPhoneNo, contactEmail, pin } = formData;
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -97,7 +96,7 @@ const OperatorModalApprove = (props) => {
     await setOperatorModes();
     await setOperatorService();
     await setOperatorStations();
-    getOperators();
+    // getOperators();
   };
 
   const getOperator = async (id) => {
@@ -113,7 +112,7 @@ const OperatorModalApprove = (props) => {
   const setOperatorZones = async () => {
     try {
     await  selected1.forEach((res)=> {
-        const body = {zoneCode: res.value, operatorId: operatorCreated.id, operatorName: operatorCreated.name};
+        const body = {zoneCode: res.value, operatorId: operatorCreated.id, operatorName: operatorCreated.id};
         axios.post(`${api.operatorZone}/api/me/operatorzones/`, body)
       })
     }catch (e) {
@@ -125,7 +124,7 @@ const OperatorModalApprove = (props) => {
   const setOperatorService = async () => {
     try {
     await  selected.forEach((res)=> {
-        const body = {servicecode: res.value, operator_name: operatorCreated.name};
+        const body = {servicecode: res.value, operator_name: operatorCreated.id};
         axios.post(`${api.operatorService}/api/me/operatorservices/`, body)
       })
     }catch (e) {
@@ -136,7 +135,7 @@ const OperatorModalApprove = (props) => {
   const setOperatorModes = async () => {
     try {
       await selected2.forEach((res)=> {
-        const body = {modecode: res.value,  operator_name: operatorCreated.name};
+        const body = {modecode: res.value,  operator_name: operatorCreated.id};
         axios.post(`${api.operatorMode}/api/me/operatormodes/`, body)
       })
     }catch (e) {
@@ -147,7 +146,7 @@ const OperatorModalApprove = (props) => {
   const setOperatorStations = async () => {
     try {
       await selected3.forEach((res)=> {
-        const body = {stationcode: res.value,  operator_name: operatorCreated.name};
+        const body = {stationcode: res.value,  operator_name: operatorCreated.id};
         axios.post(`${api.operatorStation}/api/me/operatorstations/`, body)
       })
     }catch (e) {
@@ -187,42 +186,24 @@ const OperatorModalApprove = (props) => {
     }
   },[operatorApproveId])
 
-  useEffect(()=> {
-    if (zones) {
-      const body = [];
-      zones.forEach((res)=> {
-      body.push({ value: res.zone, label: res.zone });
-        setZoneSelected(body);
-      })
-    }
-  }, [zones]);
 
   useEffect(()=> {
     if (zones) {
       const body = [];
       zones.forEach((res)=> {
-        body.push({ value: res.zone, label: res.zone });
+        body.push({ value: res.id, label: res.zone });
         setZoneSelected(body);
       })
     }
   }, [zones]);
 
 
-  useEffect(()=> {
-    if (states) {
-      const body = [];
-      states.forEach((res)=> {
-        body.push({ value: res.xstate, label: res.xstate });
-        setStateSelected(body);
-      })
-    }
-  }, [states]);
 
   useEffect(()=> {
     if (modes) {
       const body = [];
       modes.forEach((res)=> {
-        body.push({ value: res.mode, label: res.mode });
+        body.push({ value: res.id, label: res.mode });
         setModeSelected(body);
       })
     }
@@ -232,7 +213,7 @@ const OperatorModalApprove = (props) => {
     if (services) {
       const body = [];
       services.forEach((res)=> {
-        body.push({ value: res.service, label: res.service });
+        body.push({ value: res.id, label: res.service });
         setServiceSelected(body);
       })
     }
@@ -242,7 +223,7 @@ const OperatorModalApprove = (props) => {
     if (stations) {
       const body = [];
       stations.filter(station => station.service !== 'First mile - Last mile').forEach((res)=> {
-        body.push({ value: res.station, label: res.station });
+        body.push({ value: res.id, label: res.station });
         setStationSelected(body);
       })
     }
